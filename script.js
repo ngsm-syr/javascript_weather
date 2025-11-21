@@ -1,6 +1,6 @@
 'use strict';
 
-// --- 1. 準備：設定と要素の取得 ---
+// --- 設定 ---
 
 // 緯度・経度
 const latitude = 33.58978191350858;
@@ -16,7 +16,7 @@ const iconElem = document.getElementById('weather-icon');
 const textElem = document.getElementById('weather-text');
 const tempElem = document.getElementById('temperature');
 
-// --- 2. 天気コードを日本語に変換するためのオブジェクト ---
+// --- 天気コードを変換 ---
 const weatherCodes = {
     0: { text: '快晴', icon: '☀️' },
     1: { text: '晴れ', icon: '🌤️' },
@@ -32,9 +32,9 @@ const weatherCodes = {
 };
 
 
-// --- 3. 関数：天気情報を取得して表示する ---
+// --- 気情報を取得 ---
 async function fetchWeather() {
-    // 読み込み中...という表示にする
+
     textElem.textContent = '読み込み中...';
 
     try {
@@ -50,8 +50,8 @@ async function fetchWeather() {
         const temp = current.temperature; // 気温
         const code = current.weathercode; // 天気コード
 
-        // オブジェクトを使って、コード(数字)を日本語とアイコンに変換
-        // 登録がないコードなら「不明」とする
+        // コード(数字)を変換
+        // 登録がない場合は「不明」とする
         const weatherInfo = weatherCodes[code] || { text: '不明', icon: '❓' };
 
         // 画面に表示
@@ -66,8 +66,5 @@ async function fetchWeather() {
 }
 
 
-// --- 4. イベント設定 ---
+// --- イベント ---
 btn.addEventListener('click', fetchWeather);
-
-// ページを開いた瞬間に一度取得したい場合は、ここでも呼び出す
-fetchWeather();
