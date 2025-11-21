@@ -1,68 +1,57 @@
-// --- 設定 ---
+// JavaScript
 
 // 緯度・経度
 const latitude = 33.58978191350858;
 const longitude = 130.4179163144292;
 
 // Open-MeteoのAPI URL
-// current_weather=true をつけると現在の天気
 const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
 
-// 要素の取得
+// ボタンの取得
 const btn = document.getElementById('get-weather-btn');
 const iconElem = document.getElementById('weather-icon');
 const textElem = document.getElementById('weather-text');
 const tempElem = document.getElementById('temperature');
 
-// --- 天気コードを変換 ---
+// 天気コードの変換
 const weatherCodes = {
     0: { text: '快晴', icon: '☀️' },
     1: { text: '晴れ', icon: '🌤️' },
     2: { text: '一部曇り', icon: '⛅' },
     3: { text: '曇り', icon: '☁️' },
-    45: { text: '霧', icon: '🌫️' },
-    48: { text: '霧氷', icon: '🌫️' },
-    51: { text: '霧雨', icon: '💧' },
-    61: { text: '雨', icon: '☔' },
-    63: { text: '雨', icon: '☔' },
-    80: { text: 'にわか雨', icon: '🌦️' },
-    95: { text: '雷雨', icon: '⚡' },
+    61: { text: '小雨', icon: '🌧️' },
+    63: { text: '雨', icon: '🌧️' },
+    65: { text: '大雨', icon: '🌧️' },
 };
 
 
-// --- 気情報を取得 ---
+// 天気情報を取得する関数
 async function fetchWeather() {
+    console.log('天気情報を取得中...');
+    
+    // APIからデータを取得
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    
+    // コンソールでデータを確認
+    console.log('取得したデータ:', data);
+    console.log('現在の天気情報:', data.current_weather);
+    console.log('気温:', data.current_weather.temperature);
+    console.log('天気コード:', data.current_weather.weathercode);
 
-    textElem.textContent = '読み込み中...';
+    // データの取り出し
+    const current = data.current_weather;
+    const temp = current.temperature; // 気温
+    const code = current.weathercode; // 天気コード
 
-    try {
-        // APIからデータを取得 (fetch)
-        const response = await fetch(apiUrl);
-        const data = await response.json();
+    // 登録がないコードは「不明」とする
+    const weatherInfo = weatherCodes[code] || { text: '不明', icon: '?' };
+    // 画面に表示
+    iconElem.textContent = weatherInfo.icon;
+    textElem.textContent = weatherInfo.text;
+    tempElem.textContent = `${temp}℃`;
 
-        // データの確認
-        console.log(data);
-
-        // データの取り出し
-        const current = data.current_weather;
-        const temp = current.temperature; // 気温
-        const code = current.weathercode; // 天気コード
-
-        // コード(数字)を変換
-        // 登録がない場合は「不明」とする
-        const weatherInfo = weatherCodes[code] || { text: '不明', icon: '❓' };
-
-        // 画面に表示
-        iconElem.textContent = weatherInfo.icon;
-        textElem.textContent = weatherInfo.text;
-        tempElem.textContent = `${temp}℃`;
-
-    } catch (error) {
-        console.error('エラー:', error);
-        textElem.textContent = '取得に失敗しました';
-    }
 }
 
-
-// --- イベント ---
+// ボタンをクリックしたら実行
 btn.addEventListener('click', fetchWeather);
