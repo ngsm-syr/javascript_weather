@@ -1,8 +1,8 @@
 // JavaScript
 
 // 緯度・経度
-const latitude = 33.58978191350858;
-const longitude = 130.4179163144292;
+const latitude = 33.6;
+const longitude = 130.4167;
 
 // Open-MeteoのAPI URL
 const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
